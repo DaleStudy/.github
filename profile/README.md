@@ -1,6 +1,6 @@
 ![logo](logo.png)
 
-커뮤니티 중심 오픈소스 기반 스터디 그룹
+평범한 개발자들이 함께 만드는 대단한 프로젝트 👨‍💻👩‍💻🤝💡🚀
 
 - 디스코드: https://dales.link/discord
 - 링크드인: https://linkedin.com/company/dalestudy/
