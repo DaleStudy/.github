@@ -19,7 +19,7 @@ bun run sponsors     # 후원자 SVG 생성 (SPONSORKIT_GITHUB_TOKEN 환경 변�
 - **sponsorkit/sponsors.svg**: 생성된 후원자 SVG 이미지 (자동 생성 산출물이므로 직접 수정 금지, `bun run sponsors`로만 갱신)
 - **profile/README.md**: GitHub Organization 프로필에 표시되는 README. `raw.githubusercontent.com` 절대 URL로 SVG 참조
 - **README.md**: 저장소 README. 상대 경로(`./sponsorkit/sponsors.svg`)로 SVG 참조
-- **.github/workflows/sponsors.yml**: 매일 자정(UTC) cron + 수동 트리거로 후원자 SVG를 갱신하고, `chore/update-sponsors` 브랜치에 PR을 자동 생성하는 워크플로우
+- **.github/workflows/sponsors.yml**: 매일 자정(UTC) cron + 수동 트리거로 후원자 SVG를 갱신하고, `chore/update-sponsors` 브랜치에 PR을 자동 생성한 뒤 squash 머지하는 워크플로우
 
 ## 컨벤션
 
