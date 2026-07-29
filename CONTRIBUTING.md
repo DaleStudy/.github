@@ -1,6 +1,8 @@
 # 기여 가이드
 
-달레 스터디에 관심 가져주셔서 감사합니다. 이 문서는 달레 스터디의 모든 저장소에 공통으로 적용되는 기여 안내입니다.
+달레 스터디는 개발자들이 함께 배우고, 만들고, 성장하는 오픈소스 커뮤니티입니다. 저희 프로젝트에 관심 가져주셔서 감사합니다.
+
+이 문서는 달레 스터디의 모든 저장소에 공통으로 적용되는 기여 안내입니다.
 
 > **평범한 개발자들이 함께 만드는 특별한 프로젝트**
 
@@ -116,6 +118,7 @@ docs: update installation guide
 
 - 디스코드: https://dales.link/discord
 - 웹사이트: https://dalestudy.com
+- 링크드인: https://linkedin.com/company/dalestudy
 - 저장소: https://github.com/DaleStudy
 
 여러분의 첫 기여를 기다리고 있겠습니다.
