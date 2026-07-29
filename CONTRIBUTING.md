@@ -118,7 +118,7 @@ docs: update installation guide
 
 - 디스코드: https://dales.link/discord
 - 웹사이트: https://dalestudy.com
-- 링크드인: https://linkedin.com/company/dalestudy
+- 링크드인: https://www.linkedin.com/company/dalestudy/
 - 저장소: https://github.com/DaleStudy
 
 여러분의 첫 기여를 기다리고 있겠습니다.
