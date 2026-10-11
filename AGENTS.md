@@ -20,7 +20,7 @@ bun run sponsors     # 후원자 SVG 생성 (SPONSORKIT_GITHUB_TOKEN 환경 변�
 - **profile/README.md**: GitHub Organization 프로필에 표시되는 README. `raw.githubusercontent.com` 절대 URL로 SVG 참조
 - **README.md**: 저장소 README. 상대 경로(`./sponsorkit/sponsors.svg`)로 SVG 참조
 - **.github/workflows/sponsors.yml**: 매일 자정(UTC) cron + 수동 트리거로 후원자 SVG를 갱신하고, `chore/update-sponsors` 브랜치에 PR을 자동 생성한 뒤 squash 머지하는 워크플로우
-- **.github/workflows/workers-preview.yml**: 다른 저장소가 불러 쓰는 재사용 워크플로우(`workflow_call`). PR 코드를 Cloudflare Worker 미리보기 버전(`versions upload --preview-alias pr-<번호>`)으로 올리고 PR에 주소 댓글을 단다. 호출하는 쪽은 `workers-preview/v2` 같은 워크플로우별 태그로 고정한다. 동작을 바꾸면 새 태그를 단다
+- **.github/workflows/workers-preview.yml**: 다른 저장소가 불러 쓰는 재사용 워크플로우(`workflow_call`). PR 코드를 Cloudflare Worker 미리보기 버전(`versions upload --preview-alias pr-<번호>`)으로 올리고 PR에 주소 댓글을 단다. 호출하는 쪽은 `@main` 을 쓰므로 머지하는 즉시 모든 저장소에 반영된다. 고칠 때는 머지 전에 한 저장소의 PR 을 그 브랜치(`@<브랜치>`)에 잠시 연결해 시험한다
 
 ## 컨벤션
 
