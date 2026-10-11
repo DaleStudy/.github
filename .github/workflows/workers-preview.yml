@@ -9,19 +9,12 @@ name: Workers Preview
 #       permissions:
 #         contents: read
 #         pull-requests: write
-#       uses: DaleStudy/.github/.github/workflows/workers-preview.yml@workers-preview/v1
-#       with:
-#         worker: coffee
+#       uses: DaleStudy/.github/.github/workflows/workers-preview.yml@workers-preview/v2
 #       secrets:
 #         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
 on:
   workflow_call:
-    inputs:
-      worker:
-        description: "wrangler.jsonc 의 name. 미리보기 주소는 pr-<번호>-<worker>.dalestudy.workers.dev"
-        type: string
-        required: true
     secrets:
       CLOUDFLARE_API_TOKEN:
         required: true
@@ -49,10 +42,23 @@ jobs:
           packageManager: bun
           command: versions upload --preview-alias pr-${{ github.event.pull_request.number }}
 
+      # 미리보기 주소는 wrangler 가 출력한 alias URL 을 그대로 쓴다
+      - name: Find preview URL
+        id: url
+        env:
+          OUTPUT: ${{ steps.upload.outputs.command-output }}
+        run: |
+          url="$(printf '%s\n' "$OUTPUT" | sed -n 's/^Version Preview Alias URL: //p' | head -1)"
+          if [ -z "$url" ]; then
+            echo "::error::wrangler 출력에서 Version Preview Alias URL 을 찾지 못했습니다"
+            exit 1
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
       - name: Comment
         if: always()
         uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: cloudflare-workers
           message: |
-            ${{ steps.upload.outcome == 'success' && '✅' || '❌' }} 미리보기: https://pr-${{ github.event.pull_request.number }}-${{ inputs.worker }}.dalestudy.workers.dev · [실행 로그](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            ${{ steps.url.outcome == 'success' && format('✅ 미리보기: {0}', steps.url.outputs.url) || '❌ 미리보기를 만들지 못했습니다' }} · [실행 로그](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
