@@ -1,7 +1,12 @@
 name: Workers Preview
 
-# PR 코드를 운영 Worker의 미리보기 버전으로 올리고 PR에 주소를 남긴다.
+# PR 코드를 Workers Previews(wrangler preview)로 띄우고 PR에 주소를 남긴다. PR이 닫히면 지운다.
+# 미리보기 설정은 저장소의 wrangler 설정 파일에 있는 previews 블록을 따른다.
 # 저장소마다 preview.yml 에서 불러 쓴다:
+#
+#   on:
+#     pull_request:
+#       types: [opened, synchronize, reopened, closed]
 #
 #   jobs:
 #     preview:
@@ -21,6 +26,7 @@ on:
 
 jobs:
   preview:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,23 +40,22 @@ jobs:
 
       - run: bun run build
 
-      - name: Upload preview version
-        id: upload
+      - name: Deploy preview
+        id: preview
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           packageManager: bun
-          command: versions upload --preview-alias pr-${{ github.event.pull_request.number }}
+          command: preview --name pr-${{ github.event.pull_request.number }}
 
-      # 미리보기 주소는 wrangler 가 출력한 alias URL 을 그대로 쓴다
       - name: Find preview URL
         id: url
         env:
-          OUTPUT: ${{ steps.upload.outputs.command-output }}
+          OUTPUT: ${{ steps.preview.outputs.command-output }}
         run: |
-          url="$(printf '%s\n' "$OUTPUT" | sed -n 's/^Version Preview Alias URL: //p' | head -1)"
+          url="$(printf '%s\n' "$OUTPUT" | sed -n 's/^Preview URL: //p' | head -1)"
           if [ -z "$url" ]; then
-            echo "::error::wrangler 출력에서 Version Preview Alias URL 을 찾지 못했습니다"
+            echo "::error::wrangler 출력에서 Preview URL 을 찾지 못했습니다"
             exit 1
           fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
@@ -62,3 +67,22 @@ jobs:
           header: cloudflare-workers
           message: |
             ${{ steps.url.outcome == 'success' && format('✅ 미리보기: {0}', steps.url.outputs.url) || '❌ 미리보기를 만들지 못했습니다' }} · [실행 로그](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+
+      - run: bun install --frozen-lockfile
+
+      - name: Delete preview
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          packageManager: bun
+          command: preview delete --name pr-${{ github.event.pull_request.number }} -y
